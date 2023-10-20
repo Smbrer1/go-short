@@ -6,6 +6,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/Smbrer1/go-short/internal/config"
+	"github.com/Smbrer1/go-short/internal/storage/sqlite"
 )
 
 const (
@@ -21,7 +22,11 @@ func main() {
 
 	log.Info("starting url-shortener", slog.String("env", cfg.Env))
 	log.Debug("Debug messages enabled")
-	// TODO: init storage
+
+	storage, err := sqlite.New(cfg.StoragePath)
+	if err != nil {
+		log.Error("failed to init storage")
+	}
 
 	// TODO: init router
 

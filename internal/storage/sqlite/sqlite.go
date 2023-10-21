@@ -6,6 +6,8 @@ import (
 
 	"github.com/mattn/go-sqlite3"
 	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/Smbrer1/go-short/internal/storage"
 )
 
 type Storage struct {
@@ -50,7 +52,13 @@ func (s *Storage) SaveURL(urlToSave, alias string) (int64, error) {
 	if err != nil {
 		if sqliteErr, ok := err.(sqlite3.Error); ok &&
 			sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
+			return 0, fmt.Errorf("%s: %w", op, storage.ErrURLExists)
 		}
-		return nil, err
+		return 0, fmt.Errorf("%s: %w", op, err)
 	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("%s: failed to get last inserted id: %w", op, err)
+	}
+	return id, nil
 }

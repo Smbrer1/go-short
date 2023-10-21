@@ -6,6 +6,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/Smbrer1/go-short/internal/config"
+	"github.com/Smbrer1/go-short/internal/helpers/logger/sl"
 	"github.com/Smbrer1/go-short/internal/storage/sqlite"
 )
 
@@ -25,9 +26,11 @@ func main() {
 
 	storage, err := sqlite.New(cfg.StoragePath)
 	if err != nil {
-		log.Error("failed to init storage")
+		log.Error("failed to init storage", sl.Err(err))
+		os.Exit(1)
 	}
 
+	_ = storage
 	// TODO: init router
 
 	// TODO: run server

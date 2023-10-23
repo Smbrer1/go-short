@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	_ "github.com/gin-gonic/gin"
 	"golang.org/x/exp/slog"
 
 	"github.com/Smbrer1/go-short/internal/config"

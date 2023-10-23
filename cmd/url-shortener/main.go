@@ -3,11 +3,13 @@ package main
 import (
 	"os"
 
-	_ "github.com/gin-gonic/gin"
+	"github.com/gin-contrib/requestid"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/exp/slog"
 
 	"github.com/Smbrer1/go-short/internal/config"
 	"github.com/Smbrer1/go-short/internal/helpers/logger/sl"
+	"github.com/Smbrer1/go-short/internal/http-server/middleware/realip"
 	"github.com/Smbrer1/go-short/internal/storage/sqlite"
 )
 
@@ -18,13 +20,16 @@ const (
 )
 
 func main() {
+	// Init Config
 	cfg := config.MustLoad()
 
+	// Init Logger
 	log := setupLogger(cfg.Env)
 
 	log.Info("starting url-shortener", slog.String("env", cfg.Env))
 	log.Debug("Debug messages enabled")
 
+	// Init Storage
 	storage, err := sqlite.New(cfg.StoragePath)
 	if err != nil {
 		log.Error("failed to init storage", sl.Err(err))
@@ -32,7 +37,17 @@ func main() {
 	}
 
 	_ = storage
-	// TODO: init router
+
+	// Init Router
+	router := gin.Default()
+	// Add Middleware
+	router.Use(requestid.New())
+	router.Use(realip.RealIP())
+	// Create API Group
+	v1 := router.Group("v1")
+	{
+		v1.GET("", nil)
+	}
 
 	// TODO: run server
 }

@@ -4,13 +4,12 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/gin-contrib/requestid"
-	"github.com/gin-gonic/gin"
-	sloggin "github.com/samber/slog-gin"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/Smbrer1/go-short/internal/config"
 	"github.com/Smbrer1/go-short/internal/helpers/logger/sl"
-	"github.com/Smbrer1/go-short/internal/http-server/middleware/realip"
+	mwLogger "github.com/Smbrer1/go-short/internal/http-server/middleware/logger"
 	"github.com/Smbrer1/go-short/internal/storage/sqlite"
 )
 
@@ -40,18 +39,15 @@ func main() {
 	_ = storage
 
 	// Init Router
-	router := gin.New()
+	router := chi.NewRouter()
 	// Add Middleware
-	router.Use(requestid.New())
-	router.Use(realip.RealIP())
-	router.Use(sloggin.New(log))
-	router.Use(gin.Recovery())
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
+	router.Use(mwLogger.New(log))
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.URLFormat)
 
 	// Create API Group
-	v1 := router.Group("v1")
-	{
-		v1.GET("", nil)
-	}
 
 	// TODO: run server
 }

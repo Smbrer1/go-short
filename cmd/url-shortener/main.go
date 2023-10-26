@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log/slog"
 	"os"
 
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/exp/slog"
+	sloggin "github.com/samber/slog-gin"
 
 	"github.com/Smbrer1/go-short/internal/config"
 	"github.com/Smbrer1/go-short/internal/helpers/logger/sl"
@@ -39,10 +40,13 @@ func main() {
 	_ = storage
 
 	// Init Router
-	router := gin.Default()
+	router := gin.New()
 	// Add Middleware
 	router.Use(requestid.New())
 	router.Use(realip.RealIP())
+	router.Use(sloggin.New(log))
+	router.Use(gin.Recovery())
+
 	// Create API Group
 	v1 := router.Group("v1")
 	{

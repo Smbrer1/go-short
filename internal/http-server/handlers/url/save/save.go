@@ -14,7 +14,7 @@ import (
 )
 
 type Request struct {
-	URL string `json:"url"             validate:"requiered,url"`
+	URL string `json:"url"             validate:"required,url"`
 }
 
 type Response struct {
@@ -76,10 +76,13 @@ func New(log *slog.Logger, URLSaver URLSaver) http.HandlerFunc {
 			log.Error("failed to encode id", sl.Err(err))
 			render.JSON(w, r, response.Error("failed to encode url"))
 		}
-
-		render.JSON(w, r, Response{
-			Response: response.OK(),
-			Alias:    alias,
-		})
+		responseOK(w, r, alias)
 	}
+}
+
+func responseOK(w http.ResponseWriter, r *http.Request, alias string) {
+	render.JSON(w, r, Response{
+		Response: response.OK(),
+		Alias:    alias,
+	})
 }

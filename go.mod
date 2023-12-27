@@ -2,13 +2,18 @@ module github.com/Smbrer1/go-short
 
 go 1.21.3
 
-require github.com/mattn/go-sqlite3 v1.14.17
+require (
+	github.com/mattn/go-sqlite3 v1.14.17
+	github.com/stretchr/testify v1.8.4
+)
 
 require (
 	github.com/ajg/form v1.5.1 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
-	github.com/stretchr/testify v1.8.3 // indirect
+	github.com/stretchr/objx v0.5.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
 

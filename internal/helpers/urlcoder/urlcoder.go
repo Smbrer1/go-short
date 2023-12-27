@@ -66,6 +66,8 @@ func Encode(integer int64) (string, error) {
 		return "0", nil
 	}
 
+	fmt.Println("started encoding")
+
 	str := ""
 	for integer > 0 {
 		remainder := integer % base
@@ -74,6 +76,7 @@ func Encode(integer int64) (string, error) {
 			return "", err
 		}
 		str = string(char) + str
+		integer /= base
 	}
 	return str, nil
 }

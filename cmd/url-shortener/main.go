@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/Smbrer1/go-short/internal/config"
+	"github.com/Smbrer1/go-short/internal/helpers/logger/handlers/slogpretty"
 	"github.com/Smbrer1/go-short/internal/helpers/logger/sl"
 	"github.com/Smbrer1/go-short/internal/http-server/handlers/url/save"
 	mwLogger "github.com/Smbrer1/go-short/internal/http-server/middleware/logger"
@@ -73,9 +74,7 @@ func setupLogger(env string) *slog.Logger {
 	var log *slog.Logger
 	switch env {
 	case envLocal:
-		log = slog.New(
-			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
+		log = setupPrettyLogger()
 	case envDev:
 		log = slog.New(
 			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
@@ -86,4 +85,15 @@ func setupLogger(env string) *slog.Logger {
 		)
 	}
 	return log
+}
+
+func setupPrettyLogger() *slog.Logger {
+	opts := slogpretty.PrettyHandlerOptions{
+		SlogOpts: &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		},
+	}
+	handler := opts.NewPrettyHandeler(os.Stdout)
+
+	return slog.New(handler)
 }
